@@ -6,4 +6,5 @@ using UnityEngine;
 public class Animals : BaseClass
 {
     public ResourceList[] resource;
+    public Consumables consumables;
 }

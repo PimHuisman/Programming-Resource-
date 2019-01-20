@@ -13,9 +13,11 @@ GameObject:
   - component: {fileID: 5683561221321675600}
   - component: {fileID: 5683561221323967282}
   - component: {fileID: 1181825712371807396}
+  - component: {fileID: 6387816770388182024}
+  - component: {fileID: 4839524622098195479}
   m_Layer: 0
   m_Name: Deer
-  m_TagString: Untagged
+  m_TagString: Harvest
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -127,3 +129,30 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   newPosition: {x: 0, y: 0, z: 0}
+--- !u!114 &6387816770388182024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5683561221323935120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4049fe83d7de44d4ca9fb7f14d306d82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animals: {fileID: 11400000, guid: 7ab925f7e243b2242b0052d34d1ae45c, type: 2}
+--- !u!64 &4839524622098195479
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5683561221323935120}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 1
+  m_CookingOptions: 14
+  m_Mesh: {fileID: 4300000, guid: 0017b7c118c8b8340b1e07828bbbfaf1, type: 3}

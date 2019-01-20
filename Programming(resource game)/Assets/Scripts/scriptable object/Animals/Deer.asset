@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Deer
   m_EditorClassIdentifier: 
   name: deer
-  usItem: 2
+  toUseItem: 0
   cost: 0
   resource:
   - amount: 0
     resourceList: {fileID: 0}
   - amount: 0
     resourceList: {fileID: 0}
+  consumables: {fileID: 11400000, guid: 910811e6408a8cf44be32e4312bb59ea, type: 2}
