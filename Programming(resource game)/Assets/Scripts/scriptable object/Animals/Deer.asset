@@ -13,11 +13,9 @@ MonoBehaviour:
   m_Name: Deer
   m_EditorClassIdentifier: 
   name: deer
-  toUseItem: 0
-  cost: 0
-  resource:
+  toUseItem: 2
+  cost: 5
+  itemList:
   - amount: 0
-    resourceList: {fileID: 0}
-  - amount: 0
-    resourceList: {fileID: 0}
+    part: {fileID: 11400000, guid: 5f2c8e14505935f43bb3c3a06eb82e98, type: 2}
   consumables: {fileID: 11400000, guid: 910811e6408a8cf44be32e4312bb59ea, type: 2}

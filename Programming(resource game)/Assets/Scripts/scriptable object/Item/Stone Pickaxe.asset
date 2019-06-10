@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Stone Pickaxe
   m_EditorClassIdentifier: 
   name: Stone Pickaxe
-  usItem: 1
+  toUseItem: 1
   cost: 0
   resource:
   - amount: 4

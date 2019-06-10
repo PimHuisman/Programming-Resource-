@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using System.Linq;
 public class NPC : MonoBehaviour
 {
-    #region  all variables
+    #region   all variables
     public enum MindSet { atEase, cautious, anxious }
     public enum VitalWater { moist, thirsty, dehydration }
     public enum VitalFood { stuffed, hungry, starving }
@@ -53,10 +53,12 @@ public class NPC : MonoBehaviour
     [SerializeField] float radius;
     [SerializeField] List<Transform> allHarvestItems = new List<Transform>();
     [SerializeField] List<float> dist = new List<float>();
+    public bool searching = true;
     [Header("Explore")]
     [SerializeField] int destinationIndex;
     #endregion
 
+    #region Add SenseField
     void Sensefield()// add senseField
     {
         sensefield = new GameObject();
@@ -69,8 +71,10 @@ public class NPC : MonoBehaviour
         field.GetComponent<SphereCollider>().isTrigger = isTrigger;
         field.GetComponent<SphereCollider>().radius = viewRadius;
     }
+    #endregion
     void Start()
     {
+        searching = true;
         anim = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         destination = agent.destination;
@@ -93,6 +97,12 @@ public class NPC : MonoBehaviour
         GoalCheck();
         ThinkTimer();
         CheckDist(newPosition);
+        #region TestCode
+        if (Input.GetButtonDown("Jump"))
+        {
+            CheckRightOne();
+        }
+        #endregion
     }
     void ThinkTimer()
     {
@@ -137,6 +147,7 @@ public class NPC : MonoBehaviour
         Gizmos.DrawSphere(newPosition, 0.5f);
     }
     #endregion
+    #region CheckAllStats 
     void Mind()
     {
         switch (mind)
@@ -152,29 +163,11 @@ public class NPC : MonoBehaviour
                 break;
         }
     }
-
     void VitalStatCheck()
     {
         if (vitalWater != VitalWater.moist || vitalFood != VitalFood.stuffed)
         {
-            switch (vitalWater)
-            {
-                case VitalWater.thirsty:
-                    goal = Goal.searching;
-                    break;
-                case VitalWater.dehydration:
-                    goal = Goal.searching;
-                    break;
-            }
-            switch (vitalFood)
-            {
-                case VitalFood.hungry:
-                    goal = Goal.searching;
-                    break;
-                case VitalFood.starving:
-                    goal = Goal.searching;
-                    break;
-            }
+            goal = Goal.searching;
         }
         else
         {
@@ -200,26 +193,6 @@ public class NPC : MonoBehaviour
     }
     void CheckVitals()
     {
-        #region HungerCheck
-        // check your hunger stats
-        if (hungerAmount.value >= hungermax * hunger)
-        {
-            vitalFood = VitalFood.stuffed;
-        }
-        if (vitalFood != VitalFood.starving)
-        {
-            if (hungerAmount.value <= hungermax * hunger)
-            {
-                vitalFood = VitalFood.hungry;
-                //Debug.Log("I have to find food");
-            }
-        }
-        if (hungerAmount.value <= hungermax * starve)
-        {
-            vitalFood = VitalFood.starving;
-            //Debug.Log("I am starving");
-        }
-        #endregion
         #region ThirstCheck
         // check your thirst stats
         if (thirstAmount.value >= thirstmax * thirst)
@@ -240,7 +213,32 @@ public class NPC : MonoBehaviour
             //Debug.Log("my mouth is so dry");
         }
         #endregion
+        #region HungerCheck
+        // check your hunger stats
+        if (hungerAmount.value >= hungermax * hunger)
+        {
+            vitalFood = VitalFood.stuffed;
+        }
+        if (vitalFood != VitalFood.starving)
+        {
+            if (hungerAmount.value <= hungermax * hunger)
+            {
+                vitalFood = VitalFood.hungry;
+                //Debug.Log("I have to find food");
+            }
+        }
+        if (hungerAmount.value <= hungermax * starve)
+        {
+            vitalFood = VitalFood.starving;
+            //Debug.Log("I am starving");
+        }
+        #endregion
+        if (allHarvestItems.Count >= 0)
+        {
+            searching = false;
+        }
     }
+    #endregion
     void Exploring()
     {
         agent.SetDestination(allHarvestItems[destinationIndex].position);
@@ -248,13 +246,13 @@ public class NPC : MonoBehaviour
     #region Searching
     void Searching()
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
-
-        foreach (Collider nearbyObject in colliders)
+        if (searching)
         {
-            Transform harvestItem = nearbyObject.gameObject.transform;
-            if (colliders.Length != 0)
+            Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
+
+            foreach (Collider nearbyObject in colliders)
             {
+                Transform harvestItem = nearbyObject.gameObject.transform;
                 if (harvestItem.transform.tag == "Harvest")
                 {
                     if (!allHarvestItems.Contains(harvestItem))
@@ -263,12 +261,8 @@ public class NPC : MonoBehaviour
                     }
                 }
             }
-            else
-            {
-                print("I have to find water and food");
-            }
         }
-
+        agent.SetDestination(newPosition);
     }
     void AddOption(Transform item)
     {
@@ -287,6 +281,29 @@ public class NPC : MonoBehaviour
             }
         }
         dist.Clear();
+    }
+    void CheckRightOne()
+    {
+        if (vitalFood == VitalFood.starving)
+        {
+            for (int i = 0; i < allHarvestItems.Count; i++)
+            {
+                if (!allHarvestItems[i].GetComponent<ConsumablesHolder>())
+                {
+                    allHarvestItems.Remove(allHarvestItems[i]);
+                }
+            }
+        }
+        else if (vitalFood == VitalFood.hungry)
+        {
+            for (int i = 0; i < allHarvestItems.Count; i++)
+            {
+                if (!allHarvestItems[i].GetComponent<AnimalsHolder>())
+                {
+                    allHarvestItems.Remove(allHarvestItems[i]);
+                }
+            }
+        }
         CheckDistanceGoal();
     }
     void CheckDistanceGoal()
@@ -302,11 +319,11 @@ public class NPC : MonoBehaviour
         goal = Goal.exploring;
         newPosition = allHarvestItems[destinationIndex].position;
     }
+    #endregion
     void Wandering()
     {
         agent.SetDestination(newPosition);
     }
-    #endregion
 
     void CheckDist(Vector3 pos)
     {

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Stone Axe
   m_EditorClassIdentifier: 
   name: Stone Axe
-  usItem: 1
+  toUseItem: 1
   cost: 0
   resource:
   - amount: 3

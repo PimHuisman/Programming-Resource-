@@ -9,13 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b35df4677f897c040a6d5b77a938acfe, type: 3}
-  m_Name: Big Stick
+  m_Script: {fileID: 11500000, guid: caddf8f8ab335e84799d2623b6b67bee, type: 3}
+  m_Name: Wood
   m_EditorClassIdentifier: 
-  name: Big Stick
-  toUseItem: 1
-  cost: 0
-  resource:
-  - amount: 3
-    resourceList: {fileID: 11400000, guid: b81a9305696310041ba752eb5e5f1253, type: 2}
-  item: []
+  name: Stone
+  amount: 100

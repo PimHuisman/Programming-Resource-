@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Bone Knife
   m_EditorClassIdentifier: 
   name: Bone Knife
-  usItem: 1
+  toUseItem: 1
   cost: 0
   resource:
   - amount: 2

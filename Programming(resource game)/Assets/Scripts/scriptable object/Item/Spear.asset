@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Spear
   m_EditorClassIdentifier: 
   name: Spear
-  usItem: 1
+  toUseItem: 1
   cost: 0
   resource:
   - amount: 1

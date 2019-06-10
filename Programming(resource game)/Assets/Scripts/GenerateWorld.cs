@@ -9,14 +9,17 @@ public class GenerateWorld : MonoBehaviour
     [SerializeField] int maxAmountTrees;
     [SerializeField] int maxAmountSmallRocks;
     [SerializeField] int maxAmountBigRocks;
+    [SerializeField] int maxAmountBush;
     [SerializeField] int minTrees;
     [SerializeField] int minBigRocks;
     [SerializeField] int minSmallRocks;
+    [SerializeField] int minBush;
 
     [Header("All Objecten")]
     [SerializeField] Transform tree;
     [SerializeField] Transform smallrocks;
     [SerializeField] Transform bigrocks;
+    [SerializeField] Transform bush;
 
     [SerializeField] float offset;
     [SerializeField] LayerMask mask;
@@ -28,6 +31,7 @@ public class GenerateWorld : MonoBehaviour
     public List<Transform> allTrees = new List<Transform>();
     public List<Transform> allSmallRocks = new List<Transform>();
     public List<Transform> allBigRocks = new List<Transform>();
+    public List<Transform> allBush = new List<Transform>();
     [Header("Timer")]
     [SerializeField] float mintimer;
     [SerializeField] float maxtimer;
@@ -35,6 +39,7 @@ public class GenerateWorld : MonoBehaviour
     bool addTree;
     bool addbRock;
     bool addsRock;
+    bool addBush;
     RaycastHit hit;
     float newsize;
     float newyPos;
@@ -47,8 +52,8 @@ public class GenerateWorld : MonoBehaviour
 
     void Start()
     {
-        xSize = GetComponent<MeshRenderer>().bounds.size.x / 2;
-        zSize = GetComponent<MeshRenderer>().bounds.size.z / 2;
+        xSize = GetComponent<TerrainCollider>().terrainData.size.x / 2;
+        zSize = GetComponent<TerrainCollider>().terrainData.size.z / 2;
         newWorldpos = Vector3.zero;
         Generate();
     }
@@ -71,8 +76,25 @@ public class GenerateWorld : MonoBehaviour
             }
         }
         #endregion
+        #region Bush
+        for (int i = 0; i < maxAmountBush; i++)
+        {
+            newxPos = Random.Range(-xSize, xSize);
+            newzPos = Random.Range(-zSize, zSize);
+            if (Physics.Raycast(new Vector3(newxPos, 9999f, newzPos), Vector3.down, out hit, Mathf.Infinity, mask))
+            {
+                if (hit.transform.tag == "Ground")
+                {
+                    newyPos = hit.point.y;
+                    newWorldpos = new Vector3(newxPos, newyPos, newzPos);
+                    //Transform angleBush = new Transform(newWorldpos, Vector3.Angle(hit.normal));
+                    Transform newBush = Instantiate(bush, newWorldpos, Quaternion.identity);
+                    allBush.Add(newBush);
+                }
+            }
+        }
         #region SpawnBigRocks
-        for (int i = 0; i < maxAmountBigRocks; i++)
+        for (int i = 0; i < maxAmountBush; i++)
         {
             newxPos = Random.Range(-xSize, xSize);
             newzPos = Random.Range(-zSize, zSize);
@@ -82,7 +104,7 @@ public class GenerateWorld : MonoBehaviour
                 {
                     newyPos = hit.point.y;
                     newWorldpos = new Vector3(newxPos, newyPos + offset, newzPos);
-                    Transform newBigRock = Instantiate(bigrocks, newWorldpos, Quaternion.identity);
+                    Transform newBigRock = Instantiate(bush, newWorldpos, Quaternion.identity);
                     allBigRocks.Add(newBigRock);
                 }
             }
@@ -109,6 +131,7 @@ public class GenerateWorld : MonoBehaviour
         }
         #endregion
     }
+    #endregion
 
     void Update()
     {
@@ -139,6 +162,6 @@ public class GenerateWorld : MonoBehaviour
 
     void AddItem()
     {
-        
+
     }
 }

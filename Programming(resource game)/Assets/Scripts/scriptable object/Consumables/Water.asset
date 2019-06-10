@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Water
   m_EditorClassIdentifier: 
   name: Water
-  usItem: 0
-  cost: 0
+  toUseItem: 0
+  cost: 1
   addWater: 75
   addFood: 20
