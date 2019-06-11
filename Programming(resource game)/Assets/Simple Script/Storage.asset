@@ -16,6 +16,10 @@ MonoBehaviour:
   amount: 0
   resource:
   - name: Wood
-    maxAmount: 10
+    maxAmount: 20
+    currentAmount: 0
+    full: 0
   - name: Stone
-    maxAmount: 5
+    maxAmount: 10
+    currentAmount: 0
+    full: 0

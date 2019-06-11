@@ -18,13 +18,6 @@ public class Storage : MonoBehaviour
             storageList.Add(new SimpleResouceList(storage.resource[i].name, storage.resource[i].maxAmount, storage.resource[i].currentAmount, false));
         }
     }
-    void Update()
-    {
-        if (Input.GetButtonDown("Jump"))
-        {
-            Upgrade();
-        }
-    }
     public void Add(string newName, int newAmount)
     {
         int newInt = newAmount;
@@ -51,11 +44,13 @@ public class Storage : MonoBehaviour
         storageList.Add(new SimpleResouceList(newName, max, newInt,full));
     }
     // upgrade calculator
-    void Upgrade()
+    public void Upgrade()
     {
         for (int i = 0; i < storageList.Count; i++)
         {
             storageList[i].maxAmount = Mathf.RoundToInt(storageList[i].maxAmount * upgradeMultiplier);
+            storageList[i].currentAmount = 0;
+            storageList[i].full = false;
         }
     }
 }

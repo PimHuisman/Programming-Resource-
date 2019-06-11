@@ -17,6 +17,7 @@ public class Container : MonoBehaviour
         if (currentAmount <= 0)
         {
             empty = true;
+            currentAmount = 0;
         }
     }
 }

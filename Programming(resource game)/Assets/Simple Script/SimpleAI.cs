@@ -6,6 +6,9 @@ using System.Linq;
 
 public class SimpleAI : MonoBehaviour
 {
+    public enum Goal { collect, upgrade }
+    public int amountFull;
+    public Goal goal;
     Vector3 distance;
     public Transform home;
     public Vector3 newPosition;
@@ -23,14 +26,16 @@ public class SimpleAI : MonoBehaviour
     NavMeshAgent agent;
     void Start()
     {
-        newPosition = home.position;
+        goal = Goal.collect;
+        //newPosition = home.position;
         agent = gameObject.GetComponent<NavMeshAgent>();
+        agent.speed = 5f;
         Searching();
         CalculateDistance();
     }
     void Searching()
     {
-        if (searching)
+        if (goal == Goal.collect)
         {
             Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
 
@@ -49,7 +54,6 @@ public class SimpleAI : MonoBehaviour
                 }
             }
         }
-        agent.SetDestination(newPosition);
     }
 
     void CalculateDistance()
@@ -68,19 +72,26 @@ public class SimpleAI : MonoBehaviour
 
     void Update()
     {
-        agent.SetDestination(newPosition);
         Check();
+        if (goal == Goal.upgrade)
+        {
+            agent.SetDestination(home.position);
+        }
+        else
+        {
+            agent.SetDestination(newPosition);
+        }
     }
     void Check()
     {
         if (currentAmountInventory == maxAmountInventory)
         {
             newPosition = home.position;
-            agent.speed = 2;
+            agent.speed = 3.5f;
         }
         else
         {
-            agent.speed = 3.5f;
+            agent.speed = 5f;
         }
     }
 
@@ -89,7 +100,6 @@ public class SimpleAI : MonoBehaviour
         // Check if it is harvestable
         if (other.transform.tag == "Harvest")
         {
-            print("");
             // check what kind of resource it is
             inventory.Add(new SimpleResouceList(other.GetComponent<Container>().item.name, 0, maxAmountInventory, false));
             currentAmountInventory = currentAmountInventory + maxAmountInventory;
@@ -104,17 +114,29 @@ public class SimpleAI : MonoBehaviour
             // add it to the right repository
             other.GetComponent<Storage>().Add(inventory[0].name, inventory[0].currentAmount);
             // subtract it from your inventory
+            // and clear all lists
             currentAmountInventory = 0;
             inventory.Clear();
             target.Clear();
             dist.Clear();
             CheckStorage(other.transform);
-            Searching();
-            CalculateDistance();
-
+            if (goal == Goal.upgrade)
+            {
+                other.GetComponent<Storage>().Upgrade();
+                maxAmountInventory = maxAmountInventory *2;
+                goal = Goal.collect;
+            }
+            amountFull = 0;
+            agent.isStopped = true;
+            Invoke("Delay", 2);
         }
     }
-
+    void Delay()
+    {
+        Searching();
+        CalculateDistance();
+        agent.isStopped = false;
+    }
     void CheckStorage(Transform resource)
     {
         Storage fullStorage = resource.GetComponent<Storage>();
@@ -122,8 +144,14 @@ public class SimpleAI : MonoBehaviour
         {
             if (fullStorage.storageList[i].full)
             {
-                subtractname = fullStorage.storageList[i].name;
+                subtractname = (fullStorage.storageList[i].name);
+                amountFull++;
+            }
+            if (amountFull == fullStorage.storageList.Count)
+            {
+                goal = Goal.upgrade;
             }
         }
+        //amountFull = 0;
     }
 }
