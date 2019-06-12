@@ -4,26 +4,25 @@ using UnityEngine;
 
 public class Storage : MonoBehaviour
 {
-    public SimpleStorage storage;
-    public int maxStorage;
     public List<GameObject> worker = new List<GameObject>();
+    public SimpleStorage storage;
     public List<SimpleResouceList> storageList = new List<SimpleResouceList>();
     public float upgradeMultiplier;
 
     void Start()
     {
-        print(storage.resource.Count);
+        //add the list of resources
         for (int i = 0; i < storage.resource.Count; i++)
         {
             storageList.Add(new SimpleResouceList(storage.resource[i].name, storage.resource[i].maxAmount, storage.resource[i].currentAmount, false));
         }
     }
+    // when you worker takes the resources he activates the function
     public void Add(string newName, int newAmount)
     {
         int newInt = newAmount;
         int max = 0;
         bool full = false;
-        print(storageList.Count);
         for (int i = 0; i < storageList.Count; i++)
         {
             if (storageList.Count > 0)
@@ -36,12 +35,13 @@ public class Storage : MonoBehaviour
                     if (newInt >= storageList[i].maxAmount)
                     {
                         full = true;
+                        storageList[i].currentAmount = storageList[i].maxAmount;
                     }
                     storageList.RemoveAt(i);
                 }
             }
         }
-        storageList.Add(new SimpleResouceList(newName, max, newInt,full));
+        storageList.Add(new SimpleResouceList(newName, max, newInt, full));
     }
     // upgrade calculator
     public void Upgrade()

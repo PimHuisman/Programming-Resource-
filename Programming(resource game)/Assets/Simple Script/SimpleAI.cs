@@ -7,18 +7,16 @@ using System.Linq;
 public class SimpleAI : MonoBehaviour
 {
     public enum Goal { collect, upgrade }
-    public int amountFull;
     public Goal goal;
-    Vector3 distance;
+    public int amountFull;
     public Transform home;
     public Vector3 newPosition;
     [Header("Distance")]
     [SerializeField] float radius;
     public List<Transform> target = new List<Transform>();
     [SerializeField] List<float> dist = new List<float>();
-    public bool searching = true;
     [SerializeField] int destinationIndex;
-
+    [Header("Inventory")]
     public int maxAmountInventory;
     public int currentAmountInventory;
     public string subtractname;
@@ -27,7 +25,6 @@ public class SimpleAI : MonoBehaviour
     void Start()
     {
         goal = Goal.collect;
-        //newPosition = home.position;
         agent = gameObject.GetComponent<NavMeshAgent>();
         agent.speed = 5f;
         Searching();
@@ -35,6 +32,7 @@ public class SimpleAI : MonoBehaviour
     }
     void Searching()
     {
+        //search for all the harvestable objects
         if (goal == Goal.collect)
         {
             Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
@@ -58,10 +56,17 @@ public class SimpleAI : MonoBehaviour
 
     void CalculateDistance()
     {
-        //Gets the shortest distace
-        for (int i = 0; i < target.Count; i++)
+        //Gets the one with shortest distace
+        if (target.Count > 0)
         {
-            dist.Add(Vector3.Distance(transform.position, target[i].transform.position));
+            for (int i = 0; i < target.Count; i++)
+            {
+                dist.Add(Vector3.Distance(transform.position, target[i].transform.position));
+            }
+        }
+        else
+        {
+            agent.isStopped = true;
         }
         var index = dist.IndexOf(dist.Min());
         destinationIndex = index;
@@ -73,14 +78,6 @@ public class SimpleAI : MonoBehaviour
     void Update()
     {
         Check();
-        if (goal == Goal.upgrade)
-        {
-            agent.SetDestination(home.position);
-        }
-        else
-        {
-            agent.SetDestination(newPosition);
-        }
     }
     void Check()
     {
@@ -93,6 +90,15 @@ public class SimpleAI : MonoBehaviour
         {
             agent.speed = 5f;
         }
+
+        if (goal == Goal.upgrade)
+        {
+            agent.SetDestination(home.position);
+        }
+        else
+        {
+            agent.SetDestination(newPosition);
+        }
     }
 
     void OnTriggerEnter(Collider other)
@@ -103,9 +109,7 @@ public class SimpleAI : MonoBehaviour
             // check what kind of resource it is
             inventory.Add(new SimpleResouceList(other.GetComponent<Container>().item.name, 0, maxAmountInventory, false));
             currentAmountInventory = currentAmountInventory + maxAmountInventory;
-            //currentAmountInventory = maxAmountInventory + currentAmountInventory;
             // add it to your inventory
-            // subtract the max inventory amount
             other.GetComponent<Container>().currentAmount -= currentAmountInventory;
         }
         // Check if you are home
@@ -113,7 +117,6 @@ public class SimpleAI : MonoBehaviour
         {
             // add it to the right repository
             other.GetComponent<Storage>().Add(inventory[0].name, inventory[0].currentAmount);
-            // subtract it from your inventory
             // and clear all lists
             currentAmountInventory = 0;
             inventory.Clear();
@@ -123,7 +126,7 @@ public class SimpleAI : MonoBehaviour
             if (goal == Goal.upgrade)
             {
                 other.GetComponent<Storage>().Upgrade();
-                maxAmountInventory = maxAmountInventory *2;
+                maxAmountInventory = maxAmountInventory * 2;
                 goal = Goal.collect;
             }
             amountFull = 0;
@@ -152,6 +155,5 @@ public class SimpleAI : MonoBehaviour
                 goal = Goal.upgrade;
             }
         }
-        //amountFull = 0;
     }
 }
