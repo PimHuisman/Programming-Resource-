@@ -1210,6 +1210,7 @@ MonoBehaviour:
   target: []
   dist: []
   destinationIndex: 0
+  multiplier: 2
   maxAmountInventory: 5
   currentAmountInventory: 0
   subtractname: 

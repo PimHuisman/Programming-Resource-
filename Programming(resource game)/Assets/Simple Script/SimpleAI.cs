@@ -17,6 +17,7 @@ public class SimpleAI : MonoBehaviour
     [SerializeField] List<float> dist = new List<float>();
     [SerializeField] int destinationIndex;
     [Header("Inventory")]
+    public int multiplier;
     public int maxAmountInventory;
     public int currentAmountInventory;
     public string subtractname;
@@ -129,7 +130,7 @@ public class SimpleAI : MonoBehaviour
             if (goal == Goal.upgrade)
             {
                 other.GetComponent<Storage>().Upgrade();
-                maxAmountInventory = maxAmountInventory * 2;
+                maxAmountInventory = maxAmountInventory * multiplier;
                 goal = Goal.collect;
             }
             amountFull = 0;
