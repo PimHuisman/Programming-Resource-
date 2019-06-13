@@ -21,12 +21,15 @@ public class SimpleAI : MonoBehaviour
     public int currentAmountInventory;
     public string subtractname;
     public List<SimpleResouceList> inventory = new List<SimpleResouceList>();
+    [Header("Move")]
+    public float walksSpeed;
+    public float runSpeed;
     NavMeshAgent agent;
     void Start()
     {
         goal = Goal.collect;
         agent = gameObject.GetComponent<NavMeshAgent>();
-        agent.speed = 5f;
+        agent.speed = walksSpeed;
         Searching();
         CalculateDistance();
     }
@@ -84,11 +87,11 @@ public class SimpleAI : MonoBehaviour
         if (currentAmountInventory == maxAmountInventory)
         {
             newPosition = home.position;
-            agent.speed = 3.5f;
+            agent.speed = walksSpeed;
         }
         else
         {
-            agent.speed = 5f;
+            agent.speed = runSpeed;
         }
 
         if (goal == Goal.upgrade)
